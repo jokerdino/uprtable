@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="keywords" content="Underwriting"/>
+        <meta name="description" content="Underwriting" />
+        <title>Home</title>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css"/>
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='payments.css') }}"/>
+
+    </head>
+
+        <header>
+            <nav class="navbar has-background-primary-light" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <div class="navbar-start">
+                        <div class="navbar-item">
+                            <div class="buttons">
+                                <a class="button is-link" href="{{ url_for('home_page')}}">Home</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+
+                            </div>
+                        </div>
+                        </div>
+            </nav>
+        </header>
+        <body>
+
+  <form class="mb-5" method="post" enctype="multipart/form-data">
+  <table class='table'>
+  <tbody>
+    {{ form.csrf_token }}
+    <tr><td> {{ form.period.label }}  </td><td>   {{ form.period }}     </td>    </tr>    
+    <tr><td> {{ form.ro_code.label }}      </td><td>     {{ form.ro_code(class='input') }}         </td>     </tr>  
+    <tr><td> {{ form.oo_code.label }}      </td><td>     {{ form.oo_code(class='input') }}         </td>     </tr>   
+    <tr><td> {{ form.department_code.label }}      </td><td>     {{ form.department_code(class='input') }}         </td>     </tr>  
+    <tr><td> {{ form.policy_number.label }}      </td><td>     {{ form.policy_number(class='input') }}         </td>     </tr>   
+    <tr><td> {{ form.policy_start_date_from.label }}      </td><td>     {{ form.policy_start_date_from(class='input') }}         </td>     </tr>  
+    <tr><td> {{ form.policy_start_date_to.label }}      </td><td>     {{ form.policy_start_date_to(class='input') }}         </td>     </tr>   
+    <tr><td> {{ form.policy_end_date_from.label }} </td><td> {{ form.policy_end_date_from(class='input') }} </td> </tr>    
+    <tr><td> {{ form.policy_end_date_to.label }} </td><td> {{ form.policy_end_date_to(class='input') }} </td> </tr>   
+    <tr><td> {{ form.policy_accounting_date_from.label }} </td><td> {{ form.policy_accounting_date_from(class='input') }} </td> </tr>    
+    <tr><td> {{ form.policy_accounting_date_to.label }} </td><td> {{ form.policy_accounting_date_to(class='input') }} </td>
+    </tr>
+    </tbody>
+</table>
+
+     <div class="field is-grouped">
+        <button class="button is-primary is-big">View</button>
+    </div>
+     {% for field, errors in form.errors.items() %}
+    <div class="notification is-success">
+     <button class="delete"></button>
+        {{ ', '.join(errors) }}
+    </div>
+    {% endfor %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="notification is-success">
+     <button class="delete"></button>
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+</form>
+  
+</div>
+</div>
+
+        <footer class="footer">
+            <div class="content has-text-centered">
+                <small>United India - LCB Chennai 500200</small><br />
+                <small>Made by 44515</small>
+            </div>
+        </footer>
+    </body>
+</html>

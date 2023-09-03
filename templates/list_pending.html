@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<table class= "table is-striped" id="gst_table"> 
+    <thead>
+        <tr>
+        {% for i in column_names %}
+            <th>{{ i|upper }}</th>
+{% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+ </table>
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+            $('#gst_table').DataTable({
+
+                    ajax: '/api/data/',
+                    serverSide: true,
+                    stateSave: true,
+                    processing: true,
+                    scrollX: true,
+                    columns: [
+                    {% for i in column_names %}
+                    {data: '{{ i }}' },
+                    {% endfor %}
+                  ],
+                    order: [[0, 'desc']]
+                });
+        });
+</script>
+{% endblock scripts %}
+
+{% endblock content %}

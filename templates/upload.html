@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 class="title">{{ title }}</h1>
+
+<form class="mb-5" method="post" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{ form.period.label }}
+    {{ form.period }}
+
+    {{ form.csv_file.label }}
+    {{ form.csv_file }}
+
+     <div class="field is-grouped">
+        <button class="button is-primary is-big">Upload </button>
+    </div>
+     {% for field, errors in form.errors.items() %}
+    <div class="notification is-success">
+     <button class="delete"></button>
+        {{ ', '.join(errors) }}
+    </div>
+    {% endfor %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="notification is-success">
+     <button class="delete"></button>
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+</form>
+
+
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+    const $notification = $delete.parentNode;
+
+    $delete.addEventListener('click', () => {
+      $notification.parentNode.removeChild($notification);
+    });
+  });
+});
+</script>
+{% endblock scripts %}
+{% endblock content %}
