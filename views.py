@@ -1,6 +1,6 @@
 import calendar
 from datetime import datetime
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request, send_file, url_for
 from werkzeug.utils import secure_filename
 import psycopg2
 import pandas as pd
@@ -9,6 +9,8 @@ from sqlalchemy import create_engine, or_,  select, cast, String, distinct
 #from sqlalchemy import 
 from forms import FileForm, QueryForm
 from model import Uprtable
+
+# TODO: Add search buttons for remaining required columns
 
 period_query = None
 ro_code_query = None
@@ -34,7 +36,8 @@ def home_page():
 
     form.period.choices = [(item, item) for item in list_choice]
     if form.validate_on_submit():
-        print(form.data['period'])
+    # TODO: Add form fields for remaining relevant query columns
+#        print(form.data['period'])
         global period_query
         period_query = form.data['period']
         global ro_code_query
@@ -63,7 +66,6 @@ def home_page():
         policy_accounting_date_query_from = form.data['policy_accounting_date_from']
         global policy_accounting_date_query_to
         policy_accounting_date_query_to = form.data['policy_accounting_date_to']
-
 
         return redirect(url_for("query_data"))
     return render_template("home.html", form = form)
@@ -104,7 +106,15 @@ def query_data():
 
     return render_template("list_pending.html", column_names = column_names)
 
-def data():
+def data_query():
+#period_query=None, ro_code_query=None, oo_code_query=None, 
+#        depart_code_query=None, policy_number_query=None,
+#        policy_start_date_query_from=None, policy_start_date_query_to=None, 
+#        policy_end_date_query_from=None, policy_end_date_query_to=None,
+#        policy_accounting_date_query_from=None, policy_accounting_date_query_to=None):
+# TODO: Add queries filter for remaining relevant query columns
+   # entries = Uprtable.query.filter    
+    
     if period_query:
     #entries = query
         entries = Uprtable.query.filter(Uprtable.period_upr == period_query)
@@ -121,16 +131,42 @@ def data():
         entries = entries.filter(Uprtable.dat_policy_eff_from_date >= policy_start_date_query_from)
     if policy_start_date_query_to:
         entries = entries.filter(Uprtable.dat_policy_eff_from_date <= policy_start_date_query_to)
-        
+
     if policy_end_date_query_from:
         entries = entries.filter(Uprtable.dat_policy_end_date >= policy_end_date_query_from)
     if policy_end_date_query_to:
         entries = entries.filter(Uprtable.dat_policy_end_date <= policy_end_date_query_to)
-        
+
     if policy_accounting_date_query_from:
         entries = entries.filter(Uprtable.dat_accounting_date >= policy_accounting_date_query_from)
     if policy_accounting_date_query_to:
         entries = entries.filter(Uprtable.dat_accounting_date <= policy_accounting_date_query_to)
+
+    return entries
+
+def to_dict(row):
+    if row is None:
+        return None
+
+    rtn_dict = dict()
+    keys = row.__table__.columns.keys()
+    for key in keys:
+        rtn_dict[key] = getattr(row, key)
+    return rtn_dict
+
+def export_to_excel():
+    data = data_query().all()
+    data_list = [to_dict(item) for item in data]
+    df = pd.DataFrame(data_list)
+    #df = pd.DataFrame(data)
+    #df.to_excel("stuff.xlsx")
+
+    download_string = "download" + datetime.now().strftime("%d%m%Y %H%M%S") + ".xlsx"
+    df.to_excel(download_string, index=False)
+    return send_file(download_string, download_name="download_as_excel.xlsx", as_attachment=True)
+
+def data():
+    entries = data_query()
     column_names = Uprtable.query.statement.columns.keys()
     entries_count = entries.count()
     from server import db

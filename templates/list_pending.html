@@ -14,12 +14,17 @@
     </tbody>
  </table>
 
+<a href={{url_for('home_page')}} class="button is-link">Go back to query</a>
+<form>
+
+<a class="button is-link" href="{{ url_for('export_to_excel') }}">Export to excel</a>
+</form>
 {% block scripts %}
 <script>
     $(document).ready(function () {
             $('#gst_table').DataTable({
 
-                    ajax: '/api/data/',
+                    ajax: '/api/data',
                     serverSide: true,
                     stateSave: true,
                     processing: true,
